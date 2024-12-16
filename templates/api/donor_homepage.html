@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Available Requests</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Food Item</th>
+            <th>Quantity</th>
+            <th>Expiry Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in available_requests %}
+        <tr>
+            <td>{{ request.food_item.food_name }}</td>
+            <td>{{ request.quantity }}</td>
+            <td>{{ request.food_item.expiry_date }}</td>
+            <td>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="request_id" value="{{ request.id }}">
+                    <button type="submit" class="btn btn-primary">Add to Donations</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

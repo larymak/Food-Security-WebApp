@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load leaflet_tags %}
+
+{% block extra_head %}
+    {% leaflet_js %}
+    {% leaflet_css %}
+{% endblock %}
+
+{% block content %}
+<h2>Nearby Donations and Requests</h2>
+<div id="map" style="height: 500px;"></div>
+
+<script>
+    function map_init(map, options) {
+        {% for item in items %}
+            var marker = L.marker([{{ item.latitude }}, {{ item.longitude }}]).addTo(map);
+            marker.bindPopup("{{ item.type }}: {{ item.food_item }}");
+        {% endfor %}
+    }
+</script>
+{% leaflet_map "map" callback="window.map_init" %}
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">SharePlate - Share a Meal, Share the Future</h1>
+    <p class="lead">Join Us in Building a Hunger-Free Community</p>
+    <hr class="my-4">
+    <p>Make an Impact Today</p>
+    <p>Whether You Have Surplus to Give or a Need to Fill, We're Here for You!</p>
+
+    {% if not request.user.is_authenticated %}
+        <!-- Show both buttons for unauthenticated users -->
+        <button class="btn btn-primary btn-lg me-2" onclick="redirectToAuth('donate')">Donate Food</button>
+        <button class="btn btn-secondary btn-lg" onclick="redirectToAuth('request')">Request Food</button>
+    {% else %}
+        {% if request.user.user_type == 'donor' %}
+            <!-- Show only the donate button for donors -->
+            <a class="btn btn-primary btn-lg me-2" href="{% url 'create_donation' %}" role="button">Donate Food</a>
+        {% elif request.user.user_type == 'recipient' %}
+            <!-- Show only the request button for recipients -->
+            <a class="btn btn-secondary btn-lg" href="{% url 'create_request' %}" role="button">Request Food</a>
+        {% endif %}
+    {% endif %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-hand-holding-heart fa-3x mb-3 text-primary"></i>
+                <h5 class="card-title">Donate Surplus Food</h5>
+                <p class="card-text">Help reduce food waste by donating your surplus food to those in need.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x mb-3 text-success"></i>
+                <h5 class="card-title">Connect with Community</h5>
+                <p class="card-text">Join a network of donors and recipients working together to fight hunger.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-map-marker-alt fa-3x mb-3 text-danger"></i>
+                <h5 class="card-title">Local Impact</h5>
+                <p class="card-text">Make a difference in your local community by participating in food sharing.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for login/register prompt -->
+<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="authModalLabel">Authentication Required</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>You need to be logged in to perform this action. Would you like to log in or create a new account?</p>
+            </div>
+            <div class="modal-footer">
+                <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-secondary">Register</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function redirectToAuth(action) {
+        // Show the modal
+        var authModal = new bootstrap.Modal(document.getElementById('authModal'));
+        authModal.show();
+
+        // Update modal content based on the action
+        var modalTitle = document.getElementById('authModalLabel');
+        var modalBody = document.querySelector('#authModal .modal-body p');
+        
+        if (action === 'donate') {
+            modalTitle.textContent = 'Donate Food';
+            modalBody.textContent = 'You need to be logged in to make a donation. Would you like to log in or create a new account?';
+        } else if (action === 'request') {
+            modalTitle.textContent = 'Request Food';
+            modalBody.textContent = 'You need to be logged in to make a request. Would you like to log in or create a new account?';
+        }
+
+        // Update login and register links to include a redirect back to the home page
+        var loginLink = document.querySelector('#authModal .modal-footer a[href*="login"]');
+        var registerLink = document.querySelector('#authModal .modal-footer a[href*="register"]');
+        
+        loginLink.href = "{% url 'login' %}?next=/";
+        registerLink.href = "{% url 'register' %}?next=/";
+    }
+</script>
+{% endblock %}

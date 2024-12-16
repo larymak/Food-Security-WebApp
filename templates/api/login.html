@@ -1,0 +1,9 @@
+{% extends 'auth_template.html' %}
+
+{% block auth_title %}Login{% endblock %}
+
+{% block auth_button %}Login{% endblock %}
+
+{% block auth_alternative %}
+<p>Don't have an account? <a href="{% url 'register' %}{% if next %}?next={{ next }}{% endif %}">Register here</a></p>
+{% endblock %}

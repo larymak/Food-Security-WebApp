@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Food Requests</h2>
+    {% if user.is_authenticated and user.is_donor %}
+        <div class="row">
+            {% for request in requests %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ request.food_item }}</h5>
+                            <p class="card-text">Quantity: {{ request.quantity }}</p>
+                            <p class="card-text">Urgency: {{ request.get_urgency_display }}</p>
+                            <p class="card-text">Pickup Date: {{ request.pickup_date }}</p>
+                            <p class="card-text">Description: {{ request.description|truncatewords:20 }}</p>
+                            <a href="{% url 'fulfill_request' request.id %}" class="btn btn-primary">Fulfill Request</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No food requests available at the moment.</p>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You need to be logged in as a donor to view and fulfill requests.</p>
+    {% endif %}
+</div>
+{% endblock %}

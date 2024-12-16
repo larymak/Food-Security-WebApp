@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Recipient Dashboard{% endblock %}
+
+{% block content %}
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+
+<div class="container mx-auto p-6">
+    <h2 class="text-center text-2xl font-bold mb-4">Recipient Dashboard</h2>
+    
+    <!-- Profile Section -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex flex-col items-center">
+            <img src="/static/images/lary.png" alt="Profile Picture" class="rounded-full w-24 h-24 mb-4">
+            <h3 class="text-xl font-bold">{{ user.name }}</h3>
+            <p class="text-gray-600 mb-4">{{ user.username }}</p>
+            <p class="text-gray-600 mb-2">{{ user.location }}</p>
+            <div class="flex space-x-2">
+                <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded">Edit Profile</a>
+                <a href="#" class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Message</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Table Section -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-xl font-semibold mb-4">Your Requests</h3>
+        <table class="w-full">
+            <thead>
+                <tr>
+                    <th class="text-left">Food Item</th>
+                    <th class="text-left">Quantity</th>
+                    <th class="text-left">Date Requested</th>
+                    <th class="text-left">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in requests %}
+                <tr>
+                    <td>{{ request.food_item.food_name }}</td>
+                    <td>{{ request.quantity }}</td>
+                    <td>{{ request.request_date }}</td>
+                    <td>{{ request.status }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center py-4">No requests made yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'create_request' %}" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded">Create New Request</a>
+    </div>
+
+    <!-- Recent Matches Section -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-semibold mb-4">Recent Matches</h3>
+        {% if recent_matches %}
+            <ul class="list-group">
+                {% for match in recent_matches %}
+                <li class="list-group-item">
+                    Donation: {{ match.donation.food_item.name }} ({{ match.donation.quantity }} {{ match.donation.food_item.unit }})
+                    matched with Request: {{ match.request.food_item.name }} ({{ match.request.quantity }} {{ match.request.food_item.unit }})
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-center py-4">No recent matches found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

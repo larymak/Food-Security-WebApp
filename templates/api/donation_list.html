@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Donations</h2>
+<form method="get">
+    {{ filter.form.as_p }}
+    <button type="submit">Filter</button>
+</form>
+<ul>
+    {% for donation in object_list %}
+        <li>{{ donation.food_item.name }} - {{ donation.quantity }} {{ donation.food_item.unit }} ({{ donation.status }})</li>
+    {% endfor %}
+</ul>
+{% endblock %}
